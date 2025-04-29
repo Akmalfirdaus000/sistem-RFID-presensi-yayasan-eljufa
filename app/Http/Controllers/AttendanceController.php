@@ -83,7 +83,7 @@ class AttendanceController extends Controller
 
         $newAttendance = Attendance::create([
             'id_attendance' => Str::uuid(),
-            'id_user' => $user->id,  
+            'id_user' => $user->id,
             'tanggal' => Carbon::today()->toDateString(),
             'jam_masuk' => Carbon::now('Asia/Jakarta')->format('H:i:s'),
             'status' => 'hadir',

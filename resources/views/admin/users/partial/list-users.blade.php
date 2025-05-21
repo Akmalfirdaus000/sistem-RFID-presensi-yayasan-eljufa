@@ -31,7 +31,7 @@
                     <td class="p-3">{{ $user->jabatan ?? '-' }}</td>
                     <td class="p-3">{{ $user->id_rfid ?? '-' }}</td>
                     <td class="p-3">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                        <span class="px-2 py-1 text-xs font-semibold rounded-full
                         {{ $user->role === 'admin' ? 'bg-green-200 text-green-800' : 'bg-blue-200 text-blue-800' }}">
                             {{ ucfirst($user->role) }}
                         </span>
@@ -80,7 +80,7 @@
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
             </select>
-            
+
             <div class="flex justify-end space-x-2">
                 <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-400 text-white rounded">Batal</button>
                 <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Simpan</button>
@@ -97,7 +97,7 @@
         <p>Apakah Anda yakin ingin menghapus pengguna ini?</p>
         <input type="hidden" id="deleteUserId">
         <div class="flex justify-end space-x-2 mt-4">
-            
+
             <button onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-400 text-white rounded">Batal</button>
             <button onclick="deleteUser()" class="px-4 py-2 bg-red-500 text-white rounded">Hapus</button>
         </div>

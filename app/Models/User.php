@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class User extends Authenticatable
 
 {
-    
+
     // use HasFactory, Notifiable;
       use HasFactory, Notifiable, HasUuids;
 
@@ -63,12 +63,7 @@ class User extends Authenticatable
 {
     return $this->hasMany(Attendance::class, 'id_user', 'id'); // ✅ Benar
 }
-// public function getPhotoUrlAttribute()
-// {
-//     return $this->attributes['photo_url'] 
-//         ? asset('storage/' . $this->attributes['photo_url']) 
-//         : asset('images/default-profile.png');  // Default image jika tidak ada foto
-// }
+
 
 
 }

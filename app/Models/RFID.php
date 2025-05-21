@@ -11,6 +11,17 @@ class RFID extends Model
 public $incrementing = false;
 protected $keyType = 'string';
 
+
+protected $fillable = [
+    'id_rfid',
+    'rfid',
+    'status',
+];
+// Di dalam model RFID
+public function user()
+{
+    return $this->hasOne(User::class, 'id_rfid', 'id_rfid');
+}
 }
 
 

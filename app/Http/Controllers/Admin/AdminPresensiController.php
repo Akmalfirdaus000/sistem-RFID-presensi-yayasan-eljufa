@@ -3,59 +3,63 @@
 namespace App\Http\Controllers\Admin;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class AdminPresensiController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Attendance::with('user');
+public function index(Request $request)
+{
+    $users = User::where('role', '!=', 'admin')
+        ->when($request->filled('search_name'), function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->search_name . '%');
+        })
+        ->with(['attendances' => function ($q) use ($request) {
+            if ($request->filled('search_date')) {
+                $q->where('tanggal', $request->search_date);
+            }
+            if ($request->filled('search_status')) {
+                $q->where('status', $request->search_status);
+            }
+            $q->orderBy('tanggal', 'desc')->orderBy('created_at', 'desc')->take(5);
+        }])
+        ->get();
 
-        // Filter berdasarkan nama
-        if ($request->has('search_name') && $request->search_name != '') {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search_name . '%');
-            });
-        }
+    return view('admin.presensi.index', compact('users'));
+}
 
-        // Filter berdasarkan tanggal
-        if ($request->has('search_date') && $request->search_date != '') {
-            $query->where('tanggal', $request->search_date);
-        }
 
-        // Filter berdasarkan status
-        if ($request->has('search_status') && $request->search_status != '') {
-            $query->where('status', $request->search_status);
-        }
 
-        $attendances = $query->orderBy('tanggal', 'desc')->paginate(10);
+public function riwayat(Request $request)
+{
+    // Ambil semua user non-admin dengan presensi terbaru
+    $users = User::where('role', '!=', 'admin')
+        ->when($request->filled('search_name'), function ($query) use ($request) {
+            $query->where('name', 'like', '%' . $request->search_name . '%');
+        })
+        ->with(['attendances' => function ($q) use ($request) {
+            // Filter tanggal jika tersedia
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $q->whereBetween('tanggal', [
+                    Carbon::parse($request->start_date),
+                    Carbon::parse($request->end_date),
+                ]);
+            }
 
-        return view('admin.presensi.index', compact('attendances'));
-    }
-    public function riwayat(Request $request)
-    {
-        $query = Attendance::with('user');
+            // Ambil 5 presensi terbaru berdasarkan tanggal dan waktu dibuat
+            $q->orderBy('tanggal', 'desc')
+              ->orderBy('created_at', 'desc')
+              ->take(5);
+        }])
+        ->get();
 
-        // Filter berdasarkan nama karyawan
-        if ($request->filled('search_name')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->search_name . '%');
-            });
-        }
+    return view('admin.riwayat.index', compact('users'));
+}
 
-        // Filter berdasarkan rentang tanggal
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $startDate = Carbon::parse($request->start_date);
-            $endDate = Carbon::parse($request->end_date);
-            $query->whereBetween('tanggal', [$startDate, $endDate]);
-        }
 
-        // Mengatur urutan data dan paginasi
-        $attendances = $query->orderBy('tanggal', 'desc')->paginate(10);
 
-        // Mengembalikan view dengan data presensi
-        return view('admin.riwayat.index', compact('attendances'));
-    }
+
+
 }

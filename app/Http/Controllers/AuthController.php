@@ -53,6 +53,8 @@ class AuthController extends Controller
         'name' => 'required|string|max:100',
         'email' => 'required|string|email|max:150|unique:users,email',
         'password' => 'required|string|min:2|confirmed',
+        'nik' => 'required|string|max:20', // Dulu opsional, sekarang WAJIB
+        'jabatan' => 'required|string|max:50', // Dulu opsional, sekarang WAJIB
     ]);
 
     try {
@@ -61,6 +63,8 @@ class AuthController extends Controller
              'id_company' => $request->input('id_company', 'EL-00'), // Default ke "EL-00"
             'id_rfid' => $request->input('id_rfid'), // Bisa nullable
             'name' => $valid['name'],
+             'nik' => $valid['nik'],
+            'jabatan' => $valid['jabatan'],
             'email' => $valid['email'],
             'password' => Hash::make($valid['password']),
         ]);

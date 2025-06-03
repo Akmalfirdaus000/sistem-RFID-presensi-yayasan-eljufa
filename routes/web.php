@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Admin\AdminRfidController;
 use App\Http\Controllers\Admin\AdminPresensiController;
+use App\Http\Controllers\Admin\AdminRekapController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -67,35 +68,30 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::put('users/{user}', 'update')->name('admin.users.update'); // Update pengguna
         Route::delete('users/{id}', 'destroy')->name('admin.users.destroy'); // Hapus pengguna
     });
-Route::controller(AdminPresensiController::class)->group(function () {
-    Route::get('/presensi', 'index')->name('admin.presensi.index');
-    Route::get('/presensi/{id_user}', 'show')->name('admin.presensi.show'); // Tambah route untuk detail presensi
+    Route::controller(AdminPresensiController::class)->group(function () {
+        Route::get('/presensi', 'index')->name('admin.presensi.index');
+        Route::get('/presensi/{id_user}', 'show')->name('admin.presensi.show'); // Tambah route untuk detail presensi
+    });
+    Route::get('/riwayat', [AdminPresensiController::class, 'riwayat'])->name('admin.riwayat.index');
+    Route::get('/rfid', [AdminRfidController::class, 'index'])->name('admin.rfid.index');
+    // Route::put('/rfid', [AdminRfidController::class, 'index'])->name('admin.rfid.update');
+    Route::get('/admin/rfid', [AdminRfidController::class, 'index'])->name('admin.rfid.index');
+    Route::get('/admin/rfid', [AdminRfidController::class, 'create'])->name('admin.rfid.add');
+    // Menyimpan RFID baru
+    Route::post('/admin/rfid', [AdminRfidController::class, 'store'])->name('admin.rfid.store');
+
+    // Form edit RFID
+    Route::get('/admin/rfid/{id}/edit', [AdminRfidController::class, 'edit'])->name('admin.rfid.edit');
+
+    // Update RFID
+    Route::put('/admin/rfid/{id}', [AdminRfidController::class, 'update'])->name('admin.rfid.update');
+
+    // Hapus RFID
+    Route::delete('/admin/rfid/{id}', [AdminRfidController::class, 'destroy'])->name('admin.rfid.destroy');
+    Route::get('/admin/rekap', [AdminRekapController::class, 'index'])->name('admin.rekap.index');
+
+
+
+
 });
-Route::get('/riwayat', [AdminPresensiController::class, 'riwayat'])->name('admin.riwayat.index');
-Route::get('/rfid', [AdminRfidController::class, 'index'])->name('admin.rfid.index');
-// Route::put('/rfid', [AdminRfidController::class, 'index'])->name('admin.rfid.update');
-Route::get('/admin/rfid', [AdminRfidController::class, 'index'])->name('admin.rfid.index');
-Route::get('/admin/rfid', [AdminRfidController::class, 'create'])->name('admin.rfid.add');
-// Menyimpan RFID baru
-Route::post('/admin/rfid', [AdminRfidController::class, 'store'])->name('admin.rfid.store');
 
-// Form edit RFID
-Route::get('/admin/rfid/{id}/edit', [AdminRfidController::class, 'edit'])->name('admin.rfid.edit');
-
-// Update RFID
-Route::put('/admin/rfid/{id}', [AdminRfidController::class, 'update'])->name('admin.rfid.update');
-
-// Hapus RFID
-Route::delete('/admin/rfid/{id}', [AdminRfidController::class, 'destroy'])->name('admin.rfid.destroy');
-
-
-
-});
-
-
-// Route untuk admin dan User
-// Route::middleware('auth')->controller(UserController::class)->prefix('u')->group(function(){
-//     Route::get('profile', 'profile')->name('profile');
-//     Route::post('profile-change-name', 'profile_change_name')->name('profile.change.name');
-//     Route::post('profile-change-password', 'profile_change_password')->name('profile.change.password');
-// });

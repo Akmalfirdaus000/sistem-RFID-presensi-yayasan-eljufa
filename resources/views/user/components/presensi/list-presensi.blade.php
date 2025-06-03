@@ -10,7 +10,8 @@
 <body class="bg-gray-100 p-6">
     <div class="bg-green-700 p-6 mt-5 rounded-lg shadow-xl items-center justify-between space-x-6 md:space-x-8">
         <h2 class="text-2xl font-semibold mb-4 text-white">Daftar Presensi</h2>
-        
+
+
         <form method="GET" action="{{ route('presensi.index') }}" class="mb-4 flex gap-2">
             <input type="date" id="search_date" name="search_date" class="border p-2 rounded w-full" value="{{ request('search_date', date('Y-m-d')) }}">
             <button type="submit" class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Cari</button>
@@ -21,9 +22,10 @@
             <p class="text-white">Jabatan: <span class="font-semibold">{{ $user->jabatan }}</span></p>
         </div>
 
-        <button id="openModalBtn" class="bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition shadow-md">
-            + Ajukan Izin/Cuti
-        </button>
+                <!-- Tombol Buka Modal -->
+<button onclick="openModal()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+    Ajukan Izin/Cuti
+</button>
 
         <div class="overflow-x-auto mt-4">
             <table class="w-full table-auto border-collapse border border-gray-300 shadow-sm">
@@ -58,58 +60,18 @@
             {{ $attendances->links('pagination::tailwind') }}
         </div>
     </div>
-    <div id="modalIzinCuti" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 class="text-xl font-semibold mb-4">Ajukan Izin/Cuti</h2>
-        
-        <form id="formIzinCuti" method="POST" action="{{ route('presensi.izin') }}" enctype="multipart/form-data">
-            @csrf
 
-            <!-- Input Tanggal -->
-            <label class="block text-sm font-medium text-gray-700">Tanggal</label>
-            <input type="date" name="tanggal" id="tanggal" class="border p-2 w-full rounded mb-3" required>
-
-            <!-- Input Jenis Izin -->
-            <label class="block text-sm font-medium text-gray-700">Jenis Izin</label>
-            <select name="status" id="status" class="border p-2 w-full rounded mb-3" required>
-                <option value="izin">Izin</option>
-                <option value="cuti">Cuti</option>
-            </select>
-
-            <!-- Input Keterangan -->
-            <label class="block text-sm font-medium text-gray-700">Keterangan</label>
-            <textarea name="keterangan" id="keterangan" class="border p-2 w-full rounded mb-3" required></textarea>
-
-            <!-- Input File Lampiran -->
-            <label class="block text-sm font-medium text-gray-700">Lampiran (PDF/Dokumen)</label>
-            <input type="file" name="lampiran" id="lampiran" class="border p-2 w-full rounded mb-3" accept=".pdf,.doc,.docx">
-
-            <!-- Input Foto Bukti -->
-            <label class="block text-sm font-medium text-gray-700">Foto Bukti</label>
-            <input type="file" name="foto" id="foto" class="border p-2 w-full rounded mb-3" accept="image/*">
-
-            <div class="flex justify-end">
-                <button type="button" id="closeModalBtn" class="mr-2 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition">
-                    Batal
-                </button>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
-                    Kirim
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
     <!-- /modalizin -->
 
-    <div id="modalDetail" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-w-lg">
-        <h2 class="text-xl font-semibold mb-4">Detail Izin/Cuti</h2>
+<div id="modalDetail" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96 max-w-lg">
+        <h2 class="text-xl font-semibold mb-4">Detail Izin</h2>
         <p><strong>Nama:</strong> <span id="detailNamaUser"></span></p>
-        
+
         <p><strong>Tanggal:</strong> <span id="detailTanggal"></span></p>
         <p><strong>Status:</strong> <span id="detailStatus"></span></p>
         <p><strong>Keterangan:</strong> <span id="detailKeterangan"></span></p>
-        <p><strong>Lampiran:</strong> 
+        <p><strong>Lampiran:</strong>
             <a id="detailLampiran" href="#" target="_blank" class="text-blue-500 underline">Lihat Dokumen</a>
         </p>
         <p><strong>Foto Bukti:</strong></p>
@@ -123,6 +85,94 @@
         </div>
     </div>
 </div>
+
+<!-- Modal (dari kamu, ditambahkan JS dan ID) -->
+<div id="modalIzinCuti" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-xl font-semibold mb-4">Ajukan Izin/Cuti</h2>
+
+        <form id="formIzinCuti" method="POST" action="{{ route('presensi.izin') }}" enctype="multipart/form-data">
+            @csrf
+
+            <label class="block text-sm font-medium text-gray-700">Tanggal</label>
+            <input type="date" name="tanggal" class="border p-2 w-full rounded mb-3" required>
+
+            <label class="block text-sm font-medium text-gray-700">Jenis Izin</label>
+            <select name="status" class="border p-2 w-full rounded mb-3" required>
+                <option value="izin">pilihan</option>
+                <option value="izin">izin</option>
+            </select>
+
+            <label class="block text-sm font-medium text-gray-700">Keterangan</label>
+            <textarea name="keterangan" class="border p-2 w-full rounded mb-3" required></textarea>
+
+            <label class="block text-sm font-medium text-gray-700">Lampiran (PDF/Dokumen)
+                <i class="text-sm">Ukuran maksimal 2048 KB = 2 MB.</i>
+            </label>
+            <input type="file" name="lampiran" class="border p-2 w-full rounded mb-3" accept=".pdf,.doc,.docx">
+
+            <label class="block text-sm font-medium text-gray-700">Foto Bukti
+                <i class="text-sm">Ukuran maksimal 2048 KB = 2 MB.</i>
+
+            </label>
+            <input type="file" name="foto" class="border p-2 w-full rounded mb-3" accept="image/*">
+
+            <div class="flex justify-end">
+                <button type="button" onclick="closeModal()" class="mr-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                    Batal
+                </button>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Kirim
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('formIzinCuti').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Mencegah reload
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert(result.message); // Atau pakai toast
+                closeModal(); // Fungsi ini dari modal JS
+                form.reset(); // Reset form
+            } else {
+                alert('Gagal mengajukan izin: ' + (result.message ?? 'Terjadi kesalahan.'));
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengirim data.');
+        }
+    });
+</script>
+
+<!-- JavaScript Modal -->
+<script>
+    function openModal() {
+        document.getElementById('modalIzinCuti').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('modalIzinCuti').classList.add('hidden');
+    }
+</script>
+
 
 <script>
     function openDetailModal(attendance) {
@@ -150,16 +200,7 @@
         document.getElementById("modalDetail").classList.add("hidden");
     });
 </script>
-<!-- Script Modal Handling -->
-<script>
-    document.getElementById("openModalBtn").addEventListener("click", () => {
-        document.getElementById("modalIzinCuti").classList.remove("hidden");
-    });
 
-    document.getElementById("closeModalBtn").addEventListener("click", () => {
-        document.getElementById("modalIzinCuti").classList.add("hidden");
-    });
-</script>
 
     <script>
         Pusher.logToConsole = false;
@@ -168,7 +209,7 @@
         channel.bind("attendance.updated", function(data) {
             let tableBody = document.getElementById("attendance-table");
             let existingRow = document.querySelector(`tr[data-id="${data.attendance.id_attendance}"]`);
-            
+
             if (existingRow) {
                 existingRow.cells[4].innerText = data.attendance.jam_keluar ?? '-';
             } else {
@@ -191,8 +232,9 @@
                 });
             }
         });
-        
-       
+
+
     </script>
+
 </body>
 </html>

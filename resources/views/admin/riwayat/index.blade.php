@@ -27,50 +27,51 @@
 
 
         <div class="overflow-x-auto">
-            <div class="min-w-full">
-                @php
-                    $groupedAttendances = $attendances->groupBy('user_id');
-                    $i = 1;
-                @endphp
-
-                @forelse ($groupedAttendances as $userId => $attendancesForUser)
-                    <div class="mb-4 bg-white rounded-lg shadow-md p-4">
-                        <h3 class="text-lg font-bold mb-2 text-gray-800">
-                            {{ $i++ }}. {{ $attendancesForUser->first()->user->name }}
-                        </h3>
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Masuk</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Keluar</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+    <div class="min-w-full">
+        @php $i = 1; @endphp
+        @forelse ($users as $user)
+            @if ($user->attendances->isNotEmpty())
+                <div class="mb-4 bg-white rounded-lg shadow-md p-4">
+                    <h3 class="text-lg font-bold mb-2 text-gray-800">
+                        {{ $i++ }}. {{ $user->name }}
+                    </h3>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Masuk</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Keluar</th>
+                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @foreach ($user->attendances as $attendance)
+                                <tr class="hover:bg-gray-100">
+                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{{ $attendance->tanggal }}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{{ $attendance->jam_masuk }}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{{ $attendance->jam_keluar }}</td>
+                                    <td class="px-4 py-2 whitespace-nowrap text-sm">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium
+                                            @if ($attendance->status == 'Hadir') bg-green-100 text-green-800
+                                            @elseif ($attendance->status == 'Tidak Hadir') bg-red-100 text-red-800
+                                            @else bg-yellow-100 text-yellow-800 @endif">
+                                            {{ $attendance->status }}
+                                        </span>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                @foreach ($attendancesForUser as $attendance)
-                                    <tr class="hover:bg-gray-100">
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{{ $attendance->tanggal }}</td>
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{{ $attendance->jam_masuk }}</td>
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-500">{{ $attendance->jam_keluar }}</td>
-                                        <td class="px-4 py-2 whitespace-nowrap text-sm">
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium
-                                                @if ($attendance->status == 'Hadir') bg-green-100 text-green-800 @elseif ($attendance->status == 'Tidak Hadir') bg-red-100 text-red-800 @else bg-yellow-100 text-yellow-800 @endif">
-                                                {{ $attendance->status }}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @empty
-                    <p class="text-gray-500 text-center">Tidak ada data presensi.</p>
-                @endforelse
-            </div>
-        </div>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        @empty
+            <p class="text-gray-500 text-center">Tidak ada data presensi.</p>
+        @endforelse
+    </div>
+</div>
 
-        {{ $attendances->links() }}
+
+        {{-- {{ $attendances->links() }} --}}
     </div>
 </div>
 @endsection

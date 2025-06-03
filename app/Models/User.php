@@ -61,7 +61,7 @@ class User extends Authenticatable
     // Relasi dengan tabel Attendance
  public function attendances()
 {
-    return $this->hasMany(Attendance::class, 'id_user', 'id'); // ✅ Benar
+    return $this->hasMany(Attendance::class, 'id_user', 'id');
 }
 
 

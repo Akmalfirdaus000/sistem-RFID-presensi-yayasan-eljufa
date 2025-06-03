@@ -74,7 +74,7 @@
                             <a href="{{ route('admin.rfid.index') }}" class="block px-4 py-2 text-sm">List RFID</a>
                             <a href="{{ route('admin.rfid.add') }}" class="block px-4 py-2 text-sm">Tambah RFID</a>
                         </div>
-                         <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-900 transition">
+                         <a href="{{ route('admin.rekap.index') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-900 transition">
                         <i class="fas fa-chart-line"></i>
                         <span>Laporan</span>
                     </a>

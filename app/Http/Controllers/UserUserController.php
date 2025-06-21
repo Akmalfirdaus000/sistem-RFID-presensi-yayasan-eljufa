@@ -70,30 +70,35 @@ class UserUserController extends Controller
         }
     }
 
-      public function profile_change_photo(Request $request)
-    {
-        $fotoPath = null;
+public function profile_change_photo(Request $request)
+{
+    Log::info('Masuk ke method profile_change_photo');
 
-        // Memeriksa apakah ada file foto yang diupload
-        if ($request->hasFile('foto')) {
-            // Membuat nama file dengan timestamp
-            $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
-            // Menyimpan foto ke direktori penyimpanan publik di folder 'izin'
-            $fotoPath = $request->file('foto')->storeAs('profile', $fileName, 'public');
+    $fotoPath = null;
+    $user = Auth::user();
 
-            // Log informasi bahwa foto berhasil disimpan
-            Log::info('Foto berhasil disimpan:', ['path' => $fotoPath]);
+    Log::info('User login:', ['id' => $user?->id, 'email' => $user?->email]);
 
-            // Mengupdate URL foto di database
-            Auth::user()->update([
-                'photo_url' => asset('storage/' . 'profile/' . $fileName),
-            ]);
-        } else {
-            // Jika tidak ada foto yang diterima
-            Log::warning('Tidak ada foto yang diterima di request.');
-        }
+    if ($request->hasFile('foto')) {
+        $file = $request->file('foto');
+        $fileName = time() . '_' . $file->getClientOriginalName();
 
-        // Mengarahkan kembali dengan pesan sesuai kondisi
-        return back()->with('message', $fotoPath ? 'Foto profil berhasil diperbarui' : 'Tidak ada foto yang diterima.');
+        // Simpan di folder storage/app/public/profile
+        $fotoPath = $file->storeAs('profile', $fileName, 'public');
+
+        Log::info('Foto berhasil disimpan:', ['path' => $fotoPath]);
+
+        // Simpan path ke kolom 'photo' (bukan photo_url!)
+        $success = $user->update([
+            'photo' => 'storage/' . $fotoPath, // ← gunakan kolom photo
+        ]);
+
+        Log::info('Hasil update kolom photo:', ['success' => $success]);
+
+        return back()->with('message', 'Foto profil berhasil diperbarui');
+    } else {
+        Log::warning('Tidak ada foto yang diterima.');
+        return back()->with('error', 'Tidak ada foto yang dikirimkan.');
     }
+}
 }

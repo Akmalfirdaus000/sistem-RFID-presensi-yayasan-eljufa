@@ -11,10 +11,10 @@
         <!-- Informasi Data User -->
         <div class="flex items-center space-x-6">
             <!-- Foto Profil -->
-            <div class="flex-shrink-0">
-                <img src="{{ $user->photo_url ?? asset('images/default-profile.png') }}" 
-                     alt="Foto Profil" class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg">
-            </div>
+           <img src="{{ asset($user->photo ?? 'images/default-profile.png') }}"
+     alt="Foto Profil"
+     class="w-24 h-24 rounded-full border-4 border-gray-300 shadow-lg">
+
             <!-- Data User -->
             <div class="text-gray-700">
                 <p><strong>Nama:</strong> {{ $user->name }}</p>
@@ -34,7 +34,7 @@
             @csrf
             <div class="mb-4">
                 <label for="name" class="block text-gray-700 font-medium">Nama</label>
-                <input type="text" name="name" id="name" value="{{ $user->name }}" 
+                <input type="text" name="name" id="name" value="{{ $user->name }}"
                     class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300 text-gray-800">
                 @error('name')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -54,7 +54,7 @@
             @csrf
             <div class="mb-4">
                 <label for="old_password" class="block text-gray-700 font-medium">Password Lama</label>
-                <input type="password" name="old_password" id="old_password" 
+                <input type="password" name="old_password" id="old_password"
                     class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300 text-gray-800">
                 @error('old_password')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -63,7 +63,7 @@
 
             <div class="mb-4">
                 <label for="new_password" class="block text-gray-700 font-medium">Password Baru</label>
-                <input type="password" name="new_password" id="new_password" 
+                <input type="password" name="new_password" id="new_password"
                     class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300 text-gray-800">
                 @error('new_password')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -72,7 +72,7 @@
 
             <div class="mb-4">
                 <label for="new_password_confirmation" class="block text-gray-700 font-medium">Ulangi Password Baru</label>
-                <input type="password" name="new_password_confirmation" id="new_password_confirmation" 
+                <input type="password" name="new_password_confirmation" id="new_password_confirmation"
                     class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300 text-gray-800">
                 @error('new_password_confirmation')
                     <p class="text-red-500 text-sm">{{ $message }}</p>
@@ -93,7 +93,7 @@
             @csrf
             <div class="mb-4">
                 <label for="rfid" class="block text-gray-700 font-medium">Nomor RFID</label>
-                <input type="text" name="rfid" id="rfid" value="{{ $user->rfid }}" 
+                <input type="text" name="rfid" id="rfid" value="{{ $user->rfid }}"
                     class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300 text-gray-800">
                 @error('rfid')
                     <p class="text-red-500 text-sm">{{ $message }}</p>

@@ -48,7 +48,7 @@
     <!-- Surat dan Tabel Rekap -->
     <div id="rekapSurat" class="bg-gray-100 p-6 rounded-md shadow-lg">
         <div class="text-center mb-4">
-            <img src="/th.jpeg" alt="Logo" class="mx-auto h-20 pb-2">
+            <img src="/kemendikbud.webp" alt="Logo" class="mx-auto h-20 pb-2">
             <h3 class="text-xl font-bold">KEMENTERIAN AGAMA REPUBLIK INDONESIA</h3>
             <h4 class="font-semibold">KANTOR KEMENTERIAN AGAMA KAB. WONOGIRI</h4>
             <p class="font-light py-2">{{ $namaSekolah }}</p>
@@ -128,8 +128,8 @@
                 <p>WONOGIRI, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
                 <p>Kepala Yayasan</p>
                 <div style="height: 80px;"></div>
-                <p class="font-semibold underline">[Nama Kepala Yayasan]</p>
-                <p>NIP: [Nomor Induk Pegawai]</p>
+                <p class="font-semibold underline">[Dr. Junsel Friade Alstra, S. Hi, M. H.]</p>
+                <p>NIP: [211100005]</p>
             </div>
         </div>
     </div>

@@ -58,6 +58,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::get('dashboard', 'admin_dashboard')->name('admin.dashboard');
     });
 
+
+
+
     // Rute untuk manajemen pengguna (tanpa resource)
     Route::controller(UserController::class)->group(function () {
         Route::get('users', 'index')->name('admin.users.index'); // Menampilkan daftar pengguna
@@ -68,6 +71,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::put('users/{user}', 'update')->name('admin.users.update'); // Update pengguna
         Route::delete('users/{id}', 'destroy')->name('admin.users.destroy'); // Hapus pengguna
     });
+    Route::get('/admin/rekap/harian', [AdminRekapController::class, 'rekapHarian'])->name('admin.rekap.harian');
+
     Route::controller(AdminPresensiController::class)->group(function () {
         Route::get('/presensi', 'index')->name('admin.presensi.index');
         Route::get('/presensi/{id_user}', 'show')->name('admin.presensi.show'); // Tambah route untuk detail presensi

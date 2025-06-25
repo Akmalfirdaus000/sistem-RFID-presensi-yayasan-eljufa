@@ -13,6 +13,7 @@ class PresensiController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user(); // Pastikan user sudah login
+        
         $searchDate = $request->input('search_date');
 
         // $searchDate = $request->input('search_date', Carbon::today()->toDateString());
@@ -51,14 +52,14 @@ if ($searchDate) {
 $attendances = $query->paginate(5  )->appends(['search_date' => $searchDate]);
 
 
-            
+
 
         return view('user.presensi.index', compact(
-            'attendances', 
-            'user', 
+            'attendances',
+            'user',
             'searchDate',
-            'jamMasuk', 
-            'jamKeluar', 
+            'jamMasuk',
+            'jamKeluar',
             'statusKehadiran'
         ));
     }
@@ -66,7 +67,7 @@ $attendances = $query->paginate(5  )->appends(['search_date' => $searchDate]);
 {
     // Ambil ID pengguna yang sedang login
     $userId = Auth::id();
-    
+
     // Ambil nilai pencarian tanggal dari request
     $searchDate = $request->input('search_date');
 

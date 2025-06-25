@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>{{ config('app.name', 'Laravel Admin') }}</title>
 
     <!-- Fonts & Icons -->
@@ -17,27 +16,24 @@
 </head>
 
 <body class="font-sans antialiased bg-gray-100">
-    <div class="min-h-screen flex flex-col md:flex-row">
-        <!-- Sidebar Admin -->
-        <nav id="sidebar" class="w-64 bg-blue-900 text-white shadow-lg flex flex-col justify-between fixed md:relative md:translate-x-0 transition-transform duration-300 transform -translate-x-full md:w-64 z-50">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <nav class="w-64 bg-blue-900 text-white flex-shrink-0 flex flex-col justify-between">
             <div>
-                <div class="h-16 flex items-center justify-between px-4 border-b shadow-md bg-blue-800 text-white">
+                <div class="h-16 flex items-center justify-between px-4 border-b shadow-md bg-blue-800">
                     <a href="{{ route('admin.dashboard') }}" class="text-2xl font-bold flex items-center space-x-2">
                         <i class="fas fa-user-shield text-3xl"></i>
                         <span>Admin Panel</span>
                     </a>
-                    <button id="sidebarClose" class="md:hidden text-white text-2xl focus:outline-none">
-                        <i class="fas fa-times"></i>
-                    </button>
                 </div>
-                <div class="p-4 space-y-4">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-900 transition">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
+                <div class="p-4 space-y-4 overflow-y-auto">
+                    <!-- Sidebar Menu -->
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-800 transition {{ request()->routeIs('admin.dashboard') ? 'bg-blue-800' : '' }}">
+                        <i class="fas fa-home"></i><span>Dashboard</span>
                     </a>
 
-                    <!-- Dropdown Kelola Pengguna -->
-                    <div>
+                    <!-- Dropdown lainnya -->
+                      <div>
                         <button onclick="toggleMenu('userMenu')" class="flex items-center space-x-3 p-3 w-full rounded-lg bg-blue-800">
                             <i class="fas fa-users"></i>
                             <span>Kelola Pengguna</span>
@@ -74,48 +70,47 @@
                             <a href="{{ route('admin.rfid.index') }}" class="block px-4 py-2 text-sm">List RFID</a>
                             <a href="{{ route('admin.rfid.add') }}" class="block px-4 py-2 text-sm">Tambah RFID</a>
                         </div>
-                         <a href="{{ route('admin.rekap.index') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-900 transition">
-                        <i class="fas fa-chart-line"></i>
-                        <span>Laporan</span>
-                    </a>
+
+
+
+                      <div class="py-5">
+                        <button onclick="toggleMenu('laporan')" class="flex items-center space-x-3 p-3 w-full rounded-lg bg-blue-800">
+                            <i class="fas fa-users"></i>
+                            <span>Laporan</span>
+                            <i class="fas fa-chevron-down ml-auto"></i>
+                        </button>
+                        <div id="laporan" class="hidden bg-blue-900 rounded-lg ml-6">
+                            <a href="{{ route('admin.rekap.index') }}" class="block px-4 py-2 text-sm">Laporan Bulanan</a>
+                            <a href="{{ route('admin.rekap.harian') }}" class="block px-4 py-2 text-sm">Laporan Harian</a>
+                        </div>
                     </div>
+                    </div>
+                    {{-- Tambahkan menu lainnya di sini --}}
                 </div>
             </div>
-            <!-- User Info & Logout -->
+
             <div class="border-t mt-4 py-4 bg-blue-800 px-4">
                 <p class="font-medium">{{ Auth::user()->name }}</p>
                 <p class="text-sm">Role: Admin</p>
                 <a href="{{ route('logout') }}" class="mt-3 flex items-center space-x-3 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
+                    <i class="fas fa-sign-out-alt"></i><span>Logout</span>
                 </a>
             </div>
         </nav>
 
         <!-- Main Content -->
-        <div class="flex-1 min-h-screen">
-            <!-- Navbar untuk mobile -->
-            <header class="bg-blue-800 w-full fixed mb-40 z-20 shadow-md p-2 px-4 flex items-center justify-between md:hidden">
-                <div class="h-16 flex items-center text-white">
-                    <a href="{{ route('admin.dashboard') }}" class="text-2xl font-bold flex items-center space-x-2">
-                        <i class="fas fa-user-shield text-3xl"></i>
-                        <span>Admin Panel</span>
-                    </a>
-                </div>
-                <button id="sidebarOpen" class="text-white text-2xl focus:outline-none">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </header>
-
-            <!-- Page Heading -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Optional Mobile Header -->
             @isset($header)
-                <header class="bg-white shadow-md p-6">
-                    <div class="max-w-7xl mx-auto">{{ $header }}</div>
+                <header class="bg-white shadow p-4 w-full">
+                    <div class="w-full">{{ $header }}</div>
                 </header>
             @endisset
 
-            <!-- Page Content -->
-            <main class="p-3 bg-gray-200">@yield('content')</main>
+            <!-- Scrollable content area -->
+            <main class="flex-1 overflow-y-auto bg-gray-100 p-4">
+                @yield('content')
+            </main>
         </div>
     </div>
 
@@ -123,19 +118,6 @@
         function toggleMenu(menuId) {
             document.getElementById(menuId).classList.toggle("hidden");
         }
-    </script>
-    <script>
-        const sidebar = document.getElementById("sidebar");
-        const sidebarOpen = document.getElementById("sidebarOpen");
-        const sidebarClose = document.getElementById("sidebarClose");
-
-        sidebarOpen.addEventListener("click", () => {
-            sidebar.classList.remove("-translate-x-full");
-        });
-
-        sidebarClose.addEventListener("click", () => {
-            sidebar.classList.add("-translate-x-full");
-        });
     </script>
 </body>
 </html>

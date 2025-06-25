@@ -11,7 +11,7 @@
     <!-- Fonts & Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -86,10 +86,14 @@
             @endisset
 
             <!-- Page Content -->
-            <main class=" bg-gray-200">@yield('content')</main>
+            {{-- <main class=" bg-gray-200">@yield('content')</main> --}}
+            <main class="bg-gray-200 h-screen md:h-screen max-h-screen overflow-y-auto p-4">
+    @yield('content')
+</main>
+
         </div>
     </div>
-    
+
     @include('components.landing.footer')
 
     <!-- JavaScript for Sidebar Toggle -->

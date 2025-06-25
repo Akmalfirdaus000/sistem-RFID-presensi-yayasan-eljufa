@@ -14,7 +14,7 @@ class AdminRekapController extends Controller
     //
    public function index(Request $request)
     {
-        
+
         $bulan = $request->input('bulan', now()->month);
         $tahun = $request->input('tahun', now()->year);
 
@@ -26,6 +26,18 @@ class AdminRekapController extends Controller
 
         return view('admin.rekap.index', compact('users', 'bulan', 'tahun'));
     }
+    public function rekapHarian(Request $request)
+{
+    $tanggal = $request->input('tanggal', Carbon::now()->toDateString());
+
+    // Ambil semua user dengan absensi di tanggal tertentu
+    $users = User::with(['attendances' => function ($query) use ($tanggal) {
+        $query->whereDate('tanggal', $tanggal);
+    }])->get();
+
+    return view('admin.rekap.harian', compact('users', 'tanggal'));
+}
+
 
 
 }

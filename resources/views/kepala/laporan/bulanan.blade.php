@@ -1,4 +1,4 @@
-@extends('layouts.sidemin')
+@extends('layouts.kepala')
 
 @section('title', 'Rekap Absensi Bulanan')
 
@@ -19,7 +19,6 @@
 <div class="bg-white p-6 w-full rounded-lg shadow-md">
     <h2 class="text-xl font-semibold text-gray-800 mb-4">Rekap Absensi Bulanan</h2>
 
-    <!-- Filter -->
     <form method="GET" class="mb-4 flex gap-4 no-print">
         <select name="bulan" class="p-2 border rounded">
             @for ($m = 1; $m <= 12; $m++)
@@ -34,13 +33,9 @@
             @endfor
         </select>
         <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Tampilkan</button>
-        <a href="{{ route('admin.rekap.cetak_bulanan', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
-           class="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800">
-            Halaman Cetak Bulanan
-        </a>
+      
     </form>
 
-    <!-- Rekap Surat -->
     <div id="rekapSurat" class="bg-gray-100 p-6 rounded-md shadow-lg">
         <div class="text-center mb-4">
             <img src="/kemendikbud.webp" alt="Logo" class="mx-auto h-20 pb-2">
@@ -88,48 +83,29 @@
                         <tr class="text-center hover:bg-gray-100">
                             <td class="border border-gray-400 px-2 text-left">{{ $user->name }}</td>
                             <td class="border border-gray-400 px-2 text-center">{{ $user->jabatan ?? '-' }}</td>
-                            @php
-                                $hadir = 0; $sakit = 0; $izin = 0; $alpa = 0;
-                            @endphp
+                            @php $hadir = 0; $sakit = 0; $izin = 0; $alpa = 0; @endphp
                             @foreach ($tanggalPeriode as $tanggal)
                                 @php
                                     $hari = $tanggal->translatedFormat('l');
                                     $isLibur = in_array($hari, ['Sabtu', 'Minggu']);
-                                    $status = '-';
-                                    $warna = 'text-gray-500';
-                                    $bg = '';
+                                    $status = '-'; $warna = 'text-gray-500'; $bg = '';
 
                                     if ($isLibur) {
-                                        $status = '-';
-                                        $warna = 'text-white';
-                                        $bg = 'bg-black';
+                                        $status = '-'; $warna = 'text-white'; $bg = 'bg-black';
                                     } elseif ($tanggal->isFuture()) {
-                                        $status = '-';
-                                        $warna = 'text-gray-400';
+                                        $status = '-'; $warna = 'text-gray-400';
                                     } else {
                                         $absen = $user->attendances->firstWhere('tanggal', $tanggal->toDateString());
-                                        if ($absen) {
-                                            $status = strtolower($absen->status);
-                                        } else {
-                                            $status = 'alpa';
-                                        }
+                                        $status = $absen ? strtolower($absen->status) : 'alpa';
 
                                         if ($status === 'hadir') {
-                                            $hadir++;
-                                            $warna = 'text-green-600';
-                                            $status = 'H';
+                                            $hadir++; $warna = 'text-green-600'; $status = 'H';
                                         } elseif ($status === 'sakit') {
-                                            $sakit++;
-                                            $warna = 'text-blue-600';
-                                            $status = 'S';
+                                            $sakit++; $warna = 'text-blue-600'; $status = 'S';
                                         } elseif ($status === 'izin') {
-                                            $izin++;
-                                            $warna = 'text-yellow-600';
-                                            $status = 'I';
+                                            $izin++; $warna = 'text-yellow-600'; $status = 'I';
                                         } else {
-                                            $alpa++;
-                                            $warna = 'text-red-600';
-                                            $status = 'A';
+                                            $alpa++; $warna = 'text-red-600'; $status = 'A';
                                         }
                                     }
                                 @endphp
@@ -151,7 +127,6 @@
             </table>
         </div>
 
-        <!-- Tanda Tangan -->
         <div class="mt-12 flex justify-end mr-20">
             <div class="text-center">
                 <p>Alahan Panjang, {{ now()->translatedFormat('d F Y') }}</p>
@@ -164,7 +139,6 @@
     </div>
 </div>
 
-<!-- CSS untuk print -->
 <style>
     @media print {
         body * {

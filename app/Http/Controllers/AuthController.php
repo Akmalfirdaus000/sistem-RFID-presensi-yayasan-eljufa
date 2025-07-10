@@ -20,31 +20,44 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function login_action(Request $request)
+public function login_action(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|min:2',
         ]);
 
-        $user = User::where("email", $request->input('email'))->first();
+        // Ambil user berdasarkan email
+        $user = User::where('email', $request->input('email'))->first();
+
+        // Jika user tidak ditemukan
         if (!$user) {
             return back()->withErrors([
                 'email' => 'Email tidak ditemukan',
             ])->onlyInput('email');
         }
 
+        // Jika password salah
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors([
-                'password' => 'Password salah.',
-            ]);
+                'password' => 'Password salah',
+            ])->onlyInput('password');
         }
 
-        // Jika valid, lakukan login
+        // Lakukan login
         Auth::login($user, $request->has('remember_me'));
-
         $request->session()->regenerate();
-        return redirect(route('user.dashboard'))->with('message', 'Login berhasil');
+
+        // Arahkan ke dashboard berdasarkan role
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard')->with('message', 'Login berhasil sebagai Admin');
+            case 'kepala':
+                return redirect()->route('kepala.dashboard')->with('message', 'Login berhasil sebagai Kepala');
+            case 'user':
+            default:
+                return redirect()->route('user.dashboard')->with('message', 'Login berhasil');
+        }
     }
 
     public function register_action(Request $request)

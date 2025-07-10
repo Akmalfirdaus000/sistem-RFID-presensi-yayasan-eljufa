@@ -1,33 +1,36 @@
-<!-- Hero Section -->
-<section class="relative bg-green-700 text-white"> <!-- Navy Blue background -->
-    <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col-reverse md:flex-row items-center">
-        <!-- Left Content -->
-        <div class="w-full md:w-1/2 text-center md:text-left">
-            <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
-                Selamat Datang di Yayasan El-Jufa
-            </h1>
-            <p class="text-lg mb-8">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, atque excepturi? Deleniti suscipit ipsam
-                delectus aut molestias modi molestiae facere.
-            </p>
-            <div class="flex justify-center md:justify-start gap-4">
-                <a href="#laporkan"
-                    class="bg-yellow-500 text-[#003f87] px-6 py-3 rounded-lg shadow-md hover:bg-yellow-600 transition">
-                    Pendaftaran Siswa Baru
-                </a>
-                <a href="#learn-more"
-                    class="text-white border border-white px-6 py-3 rounded-lg hover:bg-[#003f87] hover:text-yellow-500 transition">
-                    Masuk Sebagai Guru
-                </a>
+<!-- Hero Section with Background Slider -->
+<section class="relative h-[90vh] text-white overflow-hidden">
+    <!-- Swiper Container -->
+    <div class="absolute inset-0 z-0">
+        <div class="swiper mySwiper ">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="/hero1.jpg" class=" w-full h-full" alt="Slide 1" />
+                </div>
+
             </div>
         </div>
-
-        <!-- Right Content (Image or Illustration) -->
-        {{-- <div class="md:w-[300px] md:ml-40 mt-10 md:mt-0 flex justify-center">
-            <img src="/logo.png" alt="Logo Yayasan El-Jufa" class="w-full max-w-md object-cover rounded-md shadow-lg">
-        </div> --}}
+        <!-- Dark overlay -->
+        <div class="absolute inset-0 bg-black bg-opacity-60 z-10"></div>
     </div>
 
-    <!-- Decorative Shape (Optional) -->
-    {{-- <div class="absolute bottom-0 left-0 right-0 h-16 bg-[#003f87]"></div> --}}
+    <!-- Content -->
+    <div class="relative z-20 flex flex-col items-center justify-center h-full text-center px-6 animate-fade-in">
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
+            Selamat Datang di <span class="text-yellow-400">Yayasan El-Jufa</span>
+        </h1>
+        <p class="text-lg md:text-xl text-white/90 mb-8 max-w-2xl leading-relaxed">
+            Mewujudkan generasi unggul melalui pendidikan berkualitas yang berlandaskan nilai-nilai luhur dan karakter.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="#laporkan"
+                class="bg-yellow-400 text-green-900 font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-yellow-300 transition-all duration-300 hover:scale-105">
+                Pendaftaran Siswa Baru
+            </a>
+            <a href="#learn-more"
+                class="border border-white font-medium px-6 py-3 rounded-xl hover:bg-white hover:text-green-800 transition-all duration-300 hover:scale-105">
+                Masuk Sebagai Guru
+            </a>
+        </div>
+    </div>
 </section>

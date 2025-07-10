@@ -19,49 +19,67 @@
 <body class="font-sans antialiased bg-gray-100">
     <div class="min-h-screen flex flex-col md:flex-row">
         <!-- Sidebar -->
-        <nav id="sidebar" class="w-64 bg-gray-100 shadow-lg flex flex-col justify-between fixed md:relative md:translate-x-0 transition-transform duration-300 transform -translate-x-full md:w-64 z-50">
-            <div>
-                <div class="h-16 flex items-center justify-between px-4 border-b shadow-md bg-green-700 text-white">
-                    <a href="{{ route('user.dashboard') }}" class="text-2xl font-bold flex items-center space-x-2">
-                        <i class="fas fa-shield-alt text-3xl"></i>
-                        <span>MyApp</span>
-                    </a>
-                    <!-- Toggle Button -->
-                    <button id="sidebarClose" class="md:hidden text-white text-2xl focus:outline-none">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="p-4 space-y-4">
-                    <!-- Link Dashboard -->
-                    <a href="{{ route('user.dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-200 transition shadow-md">
-                        <i class="fas fa-home text-green-700"></i>
-                        <span class="text-gray-800 font-medium">Dashboard</span>
-                    </a>
-                    <!-- Link Presensi -->
-                    <a href="{{ route('presensi.index') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-200 transition shadow-md">
-                        <i class="fas fa-clock text-green-700"></i>
-                        <span class="text-gray-800 font-medium">Presensi</span>
-                    </a>
-                    <a href="{{ route('riwayat.index') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-200 transition shadow-md">
-                        <i class="fas fa-file-alt text-green-700"></i>
-                        <span class="text-gray-800 font-medium">Riwayat</span>
-                    </a>
-                    <a href="{{ route('profile') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-blue-200 text- transition shadow-md">
-                        <i class="text-green-700 fas fa-user"></i>
-                        <span>Profil</span>
-                    </a>
-                </div>
-            </div>
-            <!-- User Info & Logout -->
-            <div class="border-t mt-4 py-4 bg-gray-50 px-4">
-                <p class="font-medium text-gray-700">{{ Auth::user()->name }}</p>
-                <p class="text-sm text-gray-500">NIK: {{ Auth::user()->nik }}</p>
-                <a href="{{ route('logout') }}" class="mt-3 flex items-center space-x-3 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-md">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
-        </nav>
+      <!-- Sidebar -->
+<nav id="sidebar" class="w-64 bg-teal-800 text-white shadow-lg flex flex-col justify-between fixed md:relative md:translate-x-0 transition-transform duration-300 transform -translate-x-full md:w-64 z-50">
+    <div>
+        <div class="h-16 flex items-center justify-between px-4 border-b shadow-md bg-teal-900">
+            <a href="{{ route('user.dashboard') }}" class="text-2xl font-bold flex items-center space-x-2">
+                <i class="fas fa-building-columns text-yellow-300 text-3xl"></i>
+                <span>El-Jufa</span>
+            </a>
+            <button id="sidebarClose" class="md:hidden text-white text-2xl focus:outline-none">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="p-4 space-y-4">
+            {{-- Dashboard --}}
+            <a href="{{ route('user.dashboard') }}"
+                class="flex items-center space-x-3 p-3 rounded-lg transition shadow-md
+                    {{ request()->routeIs('user.dashboard') ? 'bg-yellow-400 text-teal-900 font-semibold' : 'hover:bg-teal-700' }}">
+                <i class="fas fa-gauge-high text-yellow-300 text-lg"></i>
+                <span class="font-medium">Dashboard</span>
+            </a>
+
+            {{-- Presensi --}}
+            <a href="{{ route('presensi.index') }}"
+                class="flex items-center space-x-3 p-3 rounded-lg transition shadow-md
+                    {{ request()->routeIs('presensi.*') ? 'bg-yellow-400 text-teal-900 font-semibold' : 'hover:bg-teal-700' }}">
+                <i class="fas fa-fingerprint text-yellow-300 text-lg"></i>
+                <span class="font-medium">Presensi</span>
+            </a>
+
+            {{-- Riwayat --}}
+            <a href="{{ route('riwayat.index') }}"
+                class="flex items-center space-x-3 p-3 rounded-lg transition shadow-md
+                    {{ request()->routeIs('riwayat.*') ? 'bg-yellow-400 text-teal-900 font-semibold' : 'hover:bg-teal-700' }}">
+                <i class="fas fa-clock-rotate-left text-yellow-300 text-lg"></i>
+                <span class="font-medium">Riwayat</span>
+            </a>
+
+            {{-- Profil --}}
+            <a href="{{ route('profile') }}"
+                class="flex items-center space-x-3 p-3 rounded-lg transition shadow-md
+                    {{ request()->routeIs('profile') ? 'bg-yellow-400 text-teal-900 font-semibold' : 'hover:bg-teal-700' }}">
+                <i class="fas fa-id-badge text-yellow-300 text-lg"></i>
+                <span class="font-medium">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Info & Logout -->
+    <div class="border-t mt-4 py-4 bg-teal-900 px-4">
+        <p class="font-medium">{{ Auth::user()->name }}</p>
+        <p class="text-sm text-gray-300">NIK: {{ Auth::user()->nik }}</p>
+        <a href="{{ route('logout') }}"
+            class="mt-3 flex items-center space-x-3 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-md">
+            <i class="fas fa-right-from-bracket"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+</nav>
+
+
 
         <!-- Main Content -->
         <div class="flex-1 min-h-screen">

@@ -1,8 +1,39 @@
-@extends('layouts.sidemin')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Cetak Rekap Bulanan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-@section('title', 'Rekap Absensi Bulanan')
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-@section('content')
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Print CSS -->
+    <style>
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            #rekapSurat, #rekapSurat * {
+                visibility: visible !important;
+            }
+            #rekapSurat {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-6">
+
 @php
     use Carbon\Carbon;
     use Carbon\CarbonPeriod;
@@ -16,31 +47,17 @@
     $namaSekolah = 'Yayasan El-Jufa';
 @endphp
 
-<div class="bg-white p-6 w-full rounded-lg shadow-md">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Rekap Absensi Bulanan</h2>
+<div class="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-md">
 
-    <!-- Filter -->
-    <form method="GET" class="mb-4 flex gap-4 no-print">
-        <select name="bulan" class="p-2 border rounded">
-            @for ($m = 1; $m <= 12; $m++)
-                <option value="{{ $m }}" {{ $m == $bulan ? 'selected' : '' }}>
-                    {{ Carbon::create()->month($m)->translatedFormat('F') }}
-                </option>
-            @endfor
-        </select>
-        <select name="tahun" class="p-2 border rounded">
-            @for ($y = now()->year - 1; $y <= now()->year + 1; $y++)
-                <option value="{{ $y }}" {{ $y == $tahun ? 'selected' : '' }}>{{ $y }}</option>
-            @endfor
-        </select>
-        <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Tampilkan</button>
-        <a href="{{ route('admin.rekap.cetak_bulanan', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
-           class="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800">
-            Halaman Cetak Bulanan
-        </a>
-    </form>
+    <!-- Header & Button -->
+    <div class="flex justify-between items-center no-print mb-6">
+        <h2 class="text-xl font-semibold text-gray-800">Cetak Rekap Absensi Bulanan</h2>
+        <button onclick="window.print()" class="px-4 py-2 bg-green-700 text-white rounded hover:bg-green-800">
+            <i class="fas fa-print mr-2"></i> Cetak Sekarang
+        </button>
+    </div>
 
-    <!-- Rekap Surat -->
+    <!-- Rekap Konten -->
     <div id="rekapSurat" class="bg-gray-100 p-6 rounded-md shadow-lg">
         <div class="text-center mb-4">
             <img src="/kemendikbud.webp" alt="Logo" class="mx-auto h-20 pb-2">
@@ -59,8 +76,8 @@
             <table class="w-full border-collapse text-sm">
                 <thead>
                     <tr class="text-white text-center font-semibold">
-                        <th class="border border-gray-400 bg-gray-300 text-black" rowspan="2" style="min-width:180px;">NAMA</th>
-                        <th class="border border-gray-400 bg-gray-300 text-black" rowspan="2" style="min-width:100px;">POSISI</th>
+                        <th class="border border-gray-400 bg-gray-300 text-black align-middle" rowspan="2" style="min-width:180px;">NAMA</th>
+                        <th class="border border-gray-400 bg-gray-300 text-black align-middle" rowspan="2" style="min-width:100px;">POSISI</th>
                         <th class="border border-gray-400 bg-pink-200 text-black" colspan="{{ $jumlahHari }}">
                             HARI/TANGGAL: {{ $tanggalAwal->format('d') }} s/d {{ $tanggalAkhir->format('d') }}
                             {{ $tanggalAwal->translatedFormat('F') }} {{ $tahun }}
@@ -89,7 +106,10 @@
                             <td class="border border-gray-400 px-2 text-left">{{ $user->name }}</td>
                             <td class="border border-gray-400 px-2 text-center">{{ $user->jabatan ?? '-' }}</td>
                             @php
-                                $hadir = 0; $sakit = 0; $izin = 0; $alpa = 0;
+                                $hadir = 0;
+                                $sakit = 0;
+                                $izin = 0;
+                                $alpa = 0;
                             @endphp
                             @foreach ($tanggalPeriode as $tanggal)
                                 @php
@@ -137,6 +157,7 @@
                                     {{ $status }}
                                 </td>
                             @endforeach
+
                             <td class="border border-gray-400 font-bold text-green-600">{{ $hadir }}</td>
                             <td class="border border-gray-400 font-bold text-blue-600">{{ $sakit }}</td>
                             <td class="border border-gray-400 font-bold text-yellow-600">{{ $izin }}</td>
@@ -144,7 +165,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $jumlahHari + 6 }}" class="text-center text-gray-500 py-4">Tidak ada data pengguna</td>
+                            <td colspan="{{ $jumlahHari + 6 }}" class="text-center text-gray-500 py-4">Tidak ada data siswa</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -164,24 +185,5 @@
     </div>
 </div>
 
-<!-- CSS untuk print -->
-<style>
-    @media print {
-        body * {
-            visibility: hidden !important;
-        }
-        #rekapSurat, #rekapSurat * {
-            visibility: visible !important;
-        }
-        #rekapSurat {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-        }
-        .no-print {
-            display: none !important;
-        }
-    }
-</style>
-@endsection
+</body>
+</html>

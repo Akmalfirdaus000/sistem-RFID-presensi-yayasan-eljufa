@@ -34,7 +34,7 @@ class AdminRfidController extends Controller
 
          RFID::create($request->only(['id_rfid', 'rfid', 'status']));
 
-         return redirect()->route('admin.rfid.index')->with('success', 'RFID berhasil ditambahkan.');
+         return redirect()->route('admin.rfid.index')->with('message', 'RFID berhasil ditambahkan.');
      }
 
      // Menampilkan form edit RFID
@@ -55,7 +55,7 @@ class AdminRfidController extends Controller
          $rfid = RFID::findOrFail($id);
          $rfid->update($request->only(['rfid', 'status']));
 
-         return redirect()->route('admin.rfid.index')->with('success', 'RFID berhasil diperbarui.');
+         return redirect()->route('admin.rfid.index')->with('message', 'RFID berhasil diperbarui.');
      }
 
      // Menghapus RFID
@@ -64,6 +64,6 @@ class AdminRfidController extends Controller
          $rfid = RFID::findOrFail($id);
          $rfid->delete();
 
-         return redirect()->route('admin.rfid.index')->with('success', 'RFID berhasil dihapus.');
+         return redirect()->route('admin.rfid.index')->with('message', 'RFID berhasil dihapus.');
      }
 }

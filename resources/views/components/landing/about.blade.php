@@ -1,73 +1,57 @@
-<!-- About Us Section -->
-<section class="bg-white py-16">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-semibold text-[#003f87]">Tentang Yayasan El-Jufa</h2>
-            <p class="mt-4 text-lg text-gray-600">Mewujudkan kemajuan melalui edukasi, sosial, dan transparansi untuk
-                masyarakat yang lebih baik.</p>
-        </div>
-
-        <div
-            class="flex flex-col md:flex-row items-center justify-between gap-12 py-12 px-6 bg-green-700 text-white rounded-xl shadow-lg overflow-hidden">
-            <!-- Left Content: Description -->
-            <div class="md:w-1/2 text-lg leading-relaxed space-y-6">
-                <h2
-                    class="text-4xl font-extrabold text-white mb-4 transition-transform duration-300 transform hover:translate-x-2 hover:text-yellow-500">
-                    Tentang Yayasan El-Jufa
-                </h2>
-                <p class="text-base md:text-lg opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    Yayasan El-Jufa didirikan dengan tujuan untuk memberikan pelayanan sosial dan edukasi kepada
-                    masyarakat. Kami percaya bahwa dengan memberikan akses pendidikan yang berkualitas serta solusi
-                    untuk masalah sosial, kita dapat menciptakan masyarakat yang lebih baik dan lebih sejahtera.
-                </p>
-                <p class="text-base md:text-lg opacity-90 hover:opacity-100 transition-opacity duration-300">
-                    Fokus utama kami adalah memberikan fasilitas pendidikan bagi anak-anak yang kurang mampu,
-                    menyediakan pelatihan untuk masyarakat, serta membantu dalam pengaduan sosial. Kami berkomitmen
-                    untuk menjalankan program yang transparan dan berdampak langsung bagi masyarakat sekitar.
-                </p>
-                <div class="flex items-center gap-4 mt-6">
-                    <a href="#laporkan"
-                        class="bg-yellow-500 text-[#003f87] py-2 px-6 rounded-full shadow-lg hover:bg-yellow-600 transition duration-300">
-                        Laporkan Pengaduan
-                    </a>
-                    <a href="#learn-more"
-                        class="text-white border border-white py-2 px-6 rounded-full hover:bg-[#003f87] hover:text-yellow-500 transition duration-300">
-                        Pelajari Lebih Lanjut
-                    </a>
-                </div>
-            </div>
-
-            <!-- Right Content: Image or Illustration -->
-            <div class="md:w-1/2 mt-10 md:mt-0">
-                <img src="/logo.png" alt="Yayasan El-Jufa"
-                    class="w-full max-w-md mx-auto rounded-lg shadow-xl transform transition duration-500 hover:scale-110 hover:rotate-6">
-            </div>
-        </div>
-
-
-        <!-- Values Section -->
-        <div class="mt-12 text-center">
-            <h3 class="text-2xl font-semibold text-green-700">Nilai-Nilai Kami</h3>
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div class="text-center">
-                    <i class="fas fa-users text-4xl text-yellow-500 mb-4"></i>
-                    <h4 class="text-xl font-bold text-gray-800">Keadilan Sosial</h4>
-                    <p class="text-gray-600 mt-2">Kami berkomitmen untuk menciptakan lingkungan yang adil dan setara
-                        untuk semua.</p>
-                </div>
-                <div class="text-center">
-                    <i class="fas fa-book-open text-4xl text-yellow-500 mb-4"></i>
-                    <h4 class="text-xl font-bold text-gray-800">Edukasi Berkualitas</h4>
-                    <p class="text-gray-600 mt-2">Memberikan akses pendidikan yang berkualitas untuk masa depan yang
-                        lebih baik.</p>
-                </div>
-                <div class="text-center">
-                    <i class="fas fa-handshake text-4xl text-yellow-500 mb-4"></i>
-                    <h4 class="text-xl font-bold text-gray-800">Transparansi</h4>
-                    <p class="text-gray-600 mt-2">Kami memastikan setiap program dan kegiatan dilaksanakan dengan
-                        transparansi yang tinggi.</p>
-                </div>
-            </div>
-        </div>
+<section class="bg-white py-20">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <!-- Judul & Deskripsi Singkat -->
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-teal-800">Tentang Yayasan El-Jufa</h2>
+      <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+        Yayasan El-Jufa adalah lembaga sosial yang berfokus pada pendidikan, pelatihan, dan kesejahteraan masyarakat melalui program-program yang berlandaskan nilai kemanusiaan dan transparansi.
+      </p>
     </div>
+
+    <!-- Grid Konten -->
+    <div class="grid md:grid-cols-2 gap-12 items-center bg-teal-800 text-white p-8 rounded-xl shadow-lg">
+      <!-- Kiri: Gambar -->
+      <div class="text-center">
+        <img src="/logo.png" alt="Yayasan El-Jufa" class="mx-auto w-64 md:w-80 rounded-xl shadow-xl hover:scale-105 transition duration-500" />
+      </div>
+
+      <!-- Kanan: Isi & Poin -->
+      <div>
+        <h3 class="text-2xl font-bold mb-6">Misi Kami</h3>
+        <ul class="space-y-6 text-white/90">
+          <li class="flex items-start gap-4">
+            <i class="fas fa-school text-yellow-400 text-xl mt-1"></i>
+            <div>
+              <h4 class="font-semibold text-lg">Akses Pendidikan</h4>
+              <p>Penyediaan fasilitas pendidikan untuk anak-anak kurang mampu agar mereka mendapatkan kesempatan yang sama.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4">
+            <i class="fas fa-tools text-yellow-400 text-xl mt-1"></i>
+            <div>
+              <h4 class="font-semibold text-lg">Pelatihan Keterampilan</h4>
+              <p>Mengadakan pelatihan kerja, kewirausahaan, dan keterampilan hidup bagi masyarakat umum.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4">
+            <i class="fas fa-hand-holding-heart text-yellow-400 text-xl mt-1"></i>
+            <div>
+              <h4 class="font-semibold text-lg">Bantuan Sosial</h4>
+              <p>Memberikan bantuan kepada masyarakat terdampak bencana, ekonomi, maupun masalah sosial lainnya.</p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4">
+            <i class="fas fa-user-shield text-yellow-400 text-xl mt-1"></i>
+            <div>
+              <h4 class="font-semibold text-lg">Transparansi & Integritas</h4>
+              <p>Menjalankan program secara terbuka dan akuntabel dengan pelaporan yang jelas kepada publik.</p>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Tombol Aksi -->
+       
+      </div>
+    </div>
+  </div>
 </section>

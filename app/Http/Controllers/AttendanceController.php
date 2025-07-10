@@ -129,7 +129,7 @@ public function ajukanIzin(Request $request)
 {
     $request->validate([
         'tanggal' => 'required|date',
-        'status' => 'required|in:izin,cuti',
+        'status' => 'required|in:izin,sakit,lainnya',
         'keterangan' => 'required|string|max:255',
         'lampiran' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
@@ -181,10 +181,12 @@ public function ajukanIzin(Request $request)
     // Kirim event ke Pusher
     broadcast(new AttendanceUpdated($attendance))->toOthers();
 
-    return response()->json([
-        'message' => 'Izin/Cuti berhasil diajukan!',
-        'data' => $attendance
-    ], 200);
+    // return response()->json([
+    //     'message' => 'Izin/Cuti berhasil diajukan!',
+    //     'data' => $attendance
+    // ], 200);
+    return redirect()->route('presensi.index')->with('message', 'Izin Ketidakhadiran berhasil diajukan!');
+
 }
 
 

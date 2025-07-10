@@ -37,6 +37,17 @@ class AdminRekapController extends Controller
 
     return view('admin.rekap.harian', compact('users', 'tanggal'));
 }
+public function cetakBulanan(Request $request)
+{
+    $bulan = (int)($request->bulan ?? now()->month);
+    $tahun = (int)($request->tahun ?? now()->year);
+    $users = \App\Models\User::with(['attendances' => function ($q) use ($bulan, $tahun) {
+        $q->whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun);
+    }])->get();
+
+    return view('admin.rekap.cetak_bulanan', compact('bulan', 'tahun', 'users'));
+}
+
 
 
 

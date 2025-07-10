@@ -3,15 +3,16 @@
 // use App\Http\Controllers\Admin\PresensiController as AdminPresensiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KepalaController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\UserUserController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Admin\UserController;
 // use App\Http\Controllers\AdminPresensiController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\Admin\AdminRfidController;
-use App\Http\Controllers\Admin\AdminPresensiController;
 use App\Http\Controllers\Admin\AdminRekapController;
+use App\Http\Controllers\Admin\AdminPresensiController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -72,6 +73,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::delete('users/{id}', 'destroy')->name('admin.users.destroy'); // Hapus pengguna
     });
     Route::get('/admin/rekap/harian', [AdminRekapController::class, 'rekapHarian'])->name('admin.rekap.harian');
+Route::get('/admin/rekap/cetak-bulanan', [AdminRekapController::class, 'cetakBulanan'])
+    ->name('admin.rekap.cetak_bulanan');
 
     Route::controller(AdminPresensiController::class)->group(function () {
         Route::get('/presensi', 'index')->name('admin.presensi.index');
@@ -100,3 +103,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
 });
 
+Route::middleware(['auth', 'kepala'])->prefix('kepala')->group(function (){
+
+    Route::controller(DashboardController::class)->group(function(){
+        Route::get('dashboard', 'kepala_dashboard')->name('kepala.dashboard');
+    });
+
+ Route::get('/pengguna', [KepalaController::class, 'listPengguna'])->name('kepala.pengguna.index');
+   Route::get('/laporan/harian', [KepalaController::class, 'laporanHarian'])->name('kepala.laporan.harian');
+    Route::get('/laporan/bulanan', [KepalaController::class, 'laporanBulanan'])->name('kepala.laporan.bulanan');
+});

@@ -11,6 +11,27 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
 
+public function kepala_dashboard()
+{
+    $today = Carbon::today();
+    $month = Carbon::now()->format('m');
+    $year = Carbon::now()->format('Y');
+
+    $harian = [
+        'hadir' => Attendance::whereDate('tanggal', $today)->where('status', 'hadir')->count(),
+        'absen' => Attendance::whereDate('tanggal', $today)->where('status', 'alpa')->count(),
+        'cuti'  => Attendance::whereDate('tanggal', $today)->where('status', 'izin')->count(),
+    ];
+
+    $bulanan = Attendance::selectRaw('status, COUNT(*) as jumlah')
+        ->whereMonth('tanggal', $month)
+        ->whereYear('tanggal', $year)
+        ->groupBy('status')
+        ->pluck('jumlah', 'status');
+
+    return view('kepala.dashboard', compact('harian', 'bulanan'));
+}
+
     public function user_dashboard()
     {
         return view('user.dashboard'); // Pastikan view ini ada di resources/views/dashboard/user.blade.php

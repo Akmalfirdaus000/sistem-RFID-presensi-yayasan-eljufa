@@ -6,14 +6,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserMiddleware
+class KepalaMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === 'user') {
+        if (auth()->check() && auth()->user()->role === 'kepala') {
             return $next($request);
         }
 
-        return redirect()->route('admin.dashboard')->with('error', 'Akses ditolak: hanya untuk pengguna biasa.');
+        return redirect()->route('user.dashboard')->with('error', 'Akses ditolak: hanya untuk kepala.');
     }
 }

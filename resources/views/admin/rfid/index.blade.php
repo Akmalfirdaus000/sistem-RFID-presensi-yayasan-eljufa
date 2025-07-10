@@ -1,6 +1,8 @@
 @extends('layouts.sidemin')
 
 @section('content')
+    @include('components.alert')
+
 <div class="max-w-7xl mx-auto px-4 py-6">
     <h1 class="text-3xl font-bold text-gray-800 mb-6">📡 Daftar RFID</h1>
 

@@ -58,7 +58,7 @@ public function store(Request $request)
 
     $user->save();
 
-    return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil ditambahkan.');
+    return redirect()->route('admin.users.index')->with('message', 'Pengguna berhasil ditambahkan.');
 }
 
 
@@ -75,12 +75,12 @@ public function store(Request $request)
     $user = User::findOrFail($id);
     $user->delete();
 
-    return response()->json(['success' => 'User berhasil dihapus']);
+    return response()->json(['message' => 'User berhasil dihapus']);
 }
-public function show($id) 
+public function show($id)
 {
     $user = User::findOrFail($id);
-    
+
     $presences = Attendance::with('user') // Pastikan relasi 'user' dimuat
         ->where('id_user', $id)
         ->orderBy('tanggal', 'desc')

@@ -10,20 +10,17 @@ use Illuminate\Validation\Rule;
 
 class AdminRfidController extends Controller
 {
-     // Menampilkan semua RFID
      public function index()
      {
          $rfids = RFID::all();
          return view('admin.rfid.index', compact('rfids'));
      }
 
-     // Menampilkan form tambah RFID
      public function create()
      {
          return view('admin.rfid.add');
      }
 
-     // Menyimpan RFID baru
      public function store(Request $request)
      {
          $request->validate([
@@ -37,14 +34,12 @@ class AdminRfidController extends Controller
          return redirect()->route('admin.rfid.index')->with('message', 'RFID berhasil ditambahkan.');
      }
 
-     // Menampilkan form edit RFID
      public function edit($id)
      {
          $rfid = RFID::findOrFail($id);
          return view('admin.rfid.edit', compact('rfid'));
      }
 
-     // Menyimpan perubahan pada RFID
      public function update(Request $request, $id)
      {
          $request->validate([
@@ -58,7 +53,6 @@ class AdminRfidController extends Controller
          return redirect()->route('admin.rfid.index')->with('message', 'RFID berhasil diperbarui.');
      }
 
-     // Menghapus RFID
      public function destroy($id)
      {
          $rfid = RFID::findOrFail($id);

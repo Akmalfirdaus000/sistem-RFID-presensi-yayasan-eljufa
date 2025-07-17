@@ -41,14 +41,12 @@ class UserUserController extends Controller
         ]);
 
         if (Hash::check($valid['old_password'], Auth::user()->password)) {
-            // Update password baru
             Auth::user()->update([
                 'password' => Hash::make($valid['new_password']),
             ]);
 
             return back()->with('message', 'Password berhasil diperbarui');
         } else {
-            // Jika password lama salah
             return back()->with('error', 'Password lama Anda salah');
         }
     }
@@ -83,14 +81,12 @@ public function profile_change_photo(Request $request)
         $file = $request->file('foto');
         $fileName = time() . '_' . $file->getClientOriginalName();
 
-        // Simpan di folder storage/app/public/profile
         $fotoPath = $file->storeAs('profile', $fileName, 'public');
 
         Log::info('Foto berhasil disimpan:', ['path' => $fotoPath]);
 
-        // Simpan path ke kolom 'photo' (bukan photo_url!)
         $success = $user->update([
-            'photo' => 'storage/' . $fotoPath, // ← gunakan kolom photo
+            'photo' => 'storage/' . $fotoPath,
         ]);
 
         Log::info('Hasil update kolom photo:', ['success' => $success]);

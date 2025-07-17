@@ -27,28 +27,23 @@ public function login_action(Request $request)
             'password' => 'required|min:2',
         ]);
 
-        // Ambil user berdasarkan email
         $user = User::where('email', $request->input('email'))->first();
 
-        // Jika user tidak ditemukan
         if (!$user) {
             return back()->withErrors([
                 'email' => 'Email tidak ditemukan',
             ])->onlyInput('email');
         }
 
-        // Jika password salah
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors([
                 'password' => 'Password salah',
             ])->onlyInput('password');
         }
 
-        // Lakukan login
         Auth::login($user, $request->has('remember_me'));
         $request->session()->regenerate();
 
-        // Arahkan ke dashboard berdasarkan role
         switch ($user->role) {
             case 'admin':
                 return redirect()->route('admin.dashboard')->with('message', 'Login berhasil sebagai Admin');
@@ -66,15 +61,15 @@ public function login_action(Request $request)
         'name' => 'required|string|max:100',
         'email' => 'required|string|email|max:150|unique:users,email',
         'password' => 'required|string|min:2|confirmed',
-        'nik' => 'required|string|max:20', // Dulu opsional, sekarang WAJIB
-        'jabatan' => 'required|string|max:50', // Dulu opsional, sekarang WAJIB
+        'nik' => 'required|string|max:20',
+        'jabatan' => 'required|string|max:50',
     ]);
 
     try {
         $user = User::create([
             'id' => Str::uuid(),
              'id_company' => $request->input('id_company', 'EL-00'), // Default ke "EL-00"
-            'id_rfid' => $request->input('id_rfid'), // Bisa nullable
+            'id_rfid' => $request->input('id_rfid'), 
             'name' => $valid['name'],
              'nik' => $valid['nik'],
             'jabatan' => $valid['jabatan'],

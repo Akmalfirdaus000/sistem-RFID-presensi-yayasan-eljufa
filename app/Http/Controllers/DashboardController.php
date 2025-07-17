@@ -34,13 +34,13 @@ public function kepala_dashboard()
 
     public function user_dashboard()
     {
-        return view('user.dashboard'); // Pastikan view ini ada di resources/views/dashboard/user.blade.php
+        return view('user.dashboard');
     }
 
 public function admin_dashboard()
 {
     $totalRFID = RFID::count();
-    $totalGuru = User::where('role', 'user')->count(); // Ganti 'guru' jika kamu pakai role lain
+    $totalGuru = User::where('role', 'user')->count();
     $presensiTerbaru = Attendance::with('user')
         ->orderByDesc('tanggal')
         ->orderByDesc('created_at')

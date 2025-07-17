@@ -15,13 +15,13 @@ class AttendanceController extends Controller
 {
  public function store(Request $request)
 {
-    Log::info('Menerima request absensi', ['request' => $request->all()]);
+    Log::info('Menerima request presensi', ['request' => $request->all()]);
 
     $request->validate([
         'rfid' => 'required|string'
     ]);
 
-    // Cari RFID di database
+    // RFID  database
     $rfid = Rfid::where('rfid', $request->rfid)->first();
     if (!$rfid) {
         Log::error('RFID tidak ditemukan', ['rfid' => $request->rfid]);
@@ -43,7 +43,6 @@ class AttendanceController extends Controller
 
     Log::info('User ditemukan', ['user' => $user->toArray()]);
 
-    // Cek apakah user sedang izin/cuti
     $izinCuti = Attendance::where('id_user', $user->id)
         ->whereDate('tanggal', Carbon::today()->toDateString())
         ->whereIn('status', ['izin', 'cuti'])
@@ -61,8 +60,6 @@ class AttendanceController extends Controller
     $scanCount = Attendance::where('id_user', $user->id)
         ->whereDate('tanggal', Carbon::today()->toDateString())
         ->count();
-
-    // Jika sudah scan 2x, tolak scan berikutnya
     if ($scanCount >= 2) {
         Log::warning('User mencoba scan lebih dari batas maksimal', ['id_user' => $user->id]);
         return response()->json([
@@ -77,7 +74,6 @@ class AttendanceController extends Controller
         ->orderBy('created_at', 'desc')
         ->first();
 
-    // Jika ini scan pertama (jam masuk)
     if (!$attendance || ($attendance && $scanCount == 0)) {
         Log::info('Mencatat jam masuk baru', ['id_user' => $user->id]);
 
@@ -99,7 +95,7 @@ class AttendanceController extends Controller
         ], 200);
     }
 
-    // Jika sudah ada absen masuk tapi belum ada jam keluar, tap kedua mencatat jam keluar
+    // Jika sudah ada absen masuk tapi belum ada jam keluar, sacanaa kedua mencatat jam keluar
     if ($attendance && is_null($attendance->jam_keluar) && $scanCount == 1) {
         Log::info('Mencatat jam keluar', ['id_attendance' => $attendance->id_attendance]);
 
@@ -135,7 +131,6 @@ public function ajukanIzin(Request $request)
         'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
     ]);
 
-    // Pastikan user login
     $user = Auth::user();
     if (!$user) {
         Log::error('User tidak ditemukan saat mengajukan izin');
@@ -146,13 +141,11 @@ public function ajukanIzin(Request $request)
     }
     $user = Auth::user();
 
-    // Simpan file lampiran jika ada
     $lampiranPath = null;
     if ($request->hasFile('lampiran')) {
         $lampiranPath = $request->file('lampiran')->store('izin', 'public');
         Log::info('Lampiran berhasil disimpan:', ['path' => $lampiranPath]);
     }
-    // Simpan file foto jika ada
     $fotoPath = null;
     if ($request->hasFile('foto')) {
         $fileName = time() . '_' . $request->file('foto')->getClientOriginalName();
@@ -166,7 +159,7 @@ public function ajukanIzin(Request $request)
     // Simpan data izin/cuti ke database
     $attendance = Attendance::create([
         'id_attendance' => (string) Str::uuid(),
-        'id_user' => $user->id,  // PASTIKAN MENGGUNAKAN $user->id, BUKAN $user->id_user
+        'id_user' => $user->id,
         'tanggal' => $request->tanggal,
         'jam_masuk' => null,
         'jam_keluar' => null,

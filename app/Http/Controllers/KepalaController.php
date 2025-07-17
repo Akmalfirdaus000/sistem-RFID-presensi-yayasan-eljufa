@@ -14,7 +14,6 @@ public function listPengguna(Request $request)
 {
     $query = User::query();
 
-    // Filter pencarian jika ada input 'search'
     if ($request->filled('search')) {
         $search = $request->search;
         $query->where(function ($q) use ($search) {
@@ -24,10 +23,8 @@ public function listPengguna(Request $request)
         });
     }
 
-    // Ambil data dengan pagination
     $users = $query->orderBy('name')->paginate(10);
 
-    // Kirim ke view
     return view('kepala.pengguna.index', compact('users'));
 }
 public function laporanHarian(Request $request)

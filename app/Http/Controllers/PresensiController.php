@@ -13,7 +13,7 @@ class PresensiController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user(); // Pastikan user sudah login
-        
+
         $searchDate = $request->input('search_date');
 
         // $searchDate = $request->input('search_date', Carbon::today()->toDateString());
@@ -65,22 +65,17 @@ $attendances = $query->paginate(5  )->appends(['search_date' => $searchDate]);
     }
     public function getRiwayatUser(Request $request)
 {
-    // Ambil ID pengguna yang sedang login
     $userId = Auth::id();
 
-    // Ambil nilai pencarian tanggal dari request
     $searchDate = $request->input('search_date');
 
-    // Ambil data presensi berdasarkan user login dan filter berdasarkan tanggal jika ada
     $riwayatPresensi = Attendance::where('id_user', $userId)
         ->when($searchDate, function ($query, $searchDate) {
             return $query->whereDate('tanggal', $searchDate);
         })
         ->orderBy('tanggal', 'desc')
         ->paginate(5)
-        ->appends(['search_date' => $searchDate]); // Pastikan filter tetap saat pindah halaman
-
-    // Kirim data ke view
+        ->appends(['search_date' => $searchDate]);
     return view('user.riwayat.index', compact('riwayatPresensi', 'searchDate'));
 }
 

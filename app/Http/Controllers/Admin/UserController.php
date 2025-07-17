@@ -81,7 +81,7 @@ public function show($id)
 {
     $user = User::findOrFail($id);
 
-    $presences = Attendance::with('user') // Pastikan relasi 'user' dimuat
+    $presences = Attendance::with('user') 
         ->where('id_user', $id)
         ->orderBy('tanggal', 'desc')
         ->get()

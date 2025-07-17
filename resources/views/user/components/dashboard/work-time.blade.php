@@ -19,19 +19,36 @@
 
             $company = Company::first();
             $workTime = $company ? $company->work_time : '08:00-17:00';
+            $workTimeParts = explode('-', $workTime);
+
+            $jamKerjaMasuk = isset($workTimeParts[0]) ? trim($workTimeParts[0]) : '-';
+            $jamKerjaKeluar = isset($workTimeParts[1]) ? trim($workTimeParts[1]) : '-';
 
             $userId = Auth::id();
             $attendance = Attendance::where('id_user', $userId)
                 ->whereDate('tanggal', Carbon::today()->toDateString())
                 ->first();
 
-            $workTimeParts = explode('-', $workTime);
-            $jamKerjaMasuk = $workTimeParts[0] ?? '-';
-            $jamKerjaKeluar = $workTimeParts[1] ?? '-';
-
             $jamMasuk = $attendance && $attendance->jam_masuk ? $attendance->jam_masuk : '-';
             $jamKeluar = $attendance && $attendance->jam_keluar ? $attendance->jam_keluar : '-';
             $status = $attendance ? ucfirst($attendance->status) : 'Belum Absen';
+
+            // Logika keterlambatan
+            $isTerlambat = false;
+            $durasiTerlambat = null;
+            if ($jamMasuk !== '-' && $jamKerjaMasuk !== '-') {
+                try {
+                    $jamMasukTime = Carbon::parse($jamMasuk);
+                    $jamKerjaTime = Carbon::createFromFormat('H:i', $jamKerjaMasuk);
+                    if ($jamMasukTime->gt($jamKerjaTime)) {
+                        $isTerlambat = true;
+                        $diff = $jamMasukTime->diff($jamKerjaTime);
+                        $durasiTerlambat = ($diff->h ? $diff->h . ' jam ' : '') . ($diff->i ? $diff->i . ' menit' : '');
+                    }
+                } catch (\Exception $e) {
+                    $isTerlambat = false;
+                }
+            }
         @endphp
 
         <!-- Jam Kerja -->
@@ -43,14 +60,57 @@
         <!-- Jam Masuk -->
         <div class="p-6 bg-teal-700 text-white rounded-lg shadow-lg flex flex-col items-center justify-center hover:scale-105 transition-transform duration-200">
             <h4 class="text-sm font-semibold">Jam Masuk</h4>
-            <p class="text-lg font-bold">{{ $jamMasuk }}</p>
+            <p class="text-lg font-bold">
+                {{ $jamMasuk !== '-' ? \Carbon\Carbon::parse($jamMasuk)->format('H:i') : '-' }}
+            </p>
+            @if ($isTerlambat && $durasiTerlambat)
+                <p class="mt-1 text-xs bg-red-600 text-white px-2 py-1 rounded">
+                    Terlambat {{ $durasiTerlambat }}
+                </p>
+            @endif
         </div>
 
         <!-- Jam Keluar -->
-        <div class="p-6 bg-teal-600 text-white rounded-lg shadow-lg flex flex-col items-center justify-center hover:scale-105 transition-transform duration-200">
-            <h4 class="text-sm font-semibold">Jam Keluar</h4>
-            <p class="text-lg font-bold">{{ $jamKeluar }}</p>
-        </div>
+        <!-- Jam Keluar -->
+<div class="p-6 bg-teal-600 text-white rounded-lg shadow-lg flex flex-col items-center justify-center hover:scale-105 transition-transform duration-200">
+    <h4 class="text-sm font-semibold">Jam Keluar</h4>
+    <p class="text-lg font-bold">
+        {{ $jamKeluar !== '-' ? \Carbon\Carbon::parse($jamKeluar)->format('H:i') : '-' }}
+    </p>
+
+    @php
+        $catatanKeluar = '';
+        $durasiTambahan = null;
+
+        if ($jamKeluar !== '-' && $jamKerjaKeluar !== '-') {
+            try {
+                $jamKeluarTime = Carbon::parse($jamKeluar);
+                $jamKerjaAkhirTime = Carbon::createFromFormat('H:i', $jamKerjaKeluar);
+
+                if ($jamKeluarTime->lt($jamKerjaAkhirTime)) {
+                    // Pulang cepat
+                    $selisih = $jamKerjaAkhirTime->diff($jamKeluarTime);
+                    $durasiTambahan = ($selisih->h ? $selisih->h . ' jam ' : '') . ($selisih->i ? $selisih->i . ' menit lebih cepat' : '');
+                    $catatanKeluar = 'Pulang Cepat ' . $durasiTambahan;
+                } elseif ($jamKeluarTime->gt($jamKerjaAkhirTime)) {
+                    // Lembur
+                    $selisih = $jamKeluarTime->diff($jamKerjaAkhirTime);
+                    $durasiTambahan = ($selisih->h ? $selisih->h . ' jam ' : '') . ($selisih->i ? $selisih->i . ' menit' : '');
+                    $catatanKeluar = 'Lembur ' . $durasiTambahan;
+                }
+            } catch (\Exception $e) {
+                $catatanKeluar = '';
+            }
+        }
+    @endphp
+
+    @if ($catatanKeluar)
+        <p class="mt-1 text-xs {{ Str::startsWith($catatanKeluar, 'Lembur') ? 'bg-blue-700' : 'bg-red-600' }} text-white px-2 py-1 rounded">
+            {{ $catatanKeluar }}
+        </p>
+    @endif
+</div>
+
 
         <!-- Status Kehadiran -->
         <div class="p-5 bg-emerald-600 text-white rounded-lg shadow-lg flex flex-col items-center justify-center hover:scale-105 transition-transform duration-200">

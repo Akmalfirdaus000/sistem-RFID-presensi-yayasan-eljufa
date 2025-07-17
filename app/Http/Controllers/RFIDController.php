@@ -8,20 +8,16 @@ use Illuminate\Http\Request;
 
 class RFIDController extends Controller
 {
-    // Mendaftarkan RFID ke User
    public function registerRFID(Request $request)
 {
-    // Validasi ID dan UID RFID
     $request->validate([
-        'user_id' => 'required|exists:users,id_user', // Pastikan id_user adalah UUID
+        'user_id' => 'required|exists:users,id_user',
         'rfid_uid' => 'required|exists:rfids,rfid'
     ]);
 
     $user = User::where('id_user', $request->user_id)->first();
 
-    // Proses setelah data user ditemukan
     if ($user) {
-        // Lakukan pengolahan data, misalnya menyimpan UID RFID pada user
         $user->id_rfid = $request->rfid_uid;
         $user->save();
 
@@ -37,14 +33,12 @@ class RFIDController extends Controller
     ]);
 }
 
-    // Mendapatkan user berdasarkan RFID UID
     public function getUserByRFID(Request $request)
     {
         $request->validate([
             'rfid_uid' => 'required'
         ]);
 
-        // Cari RFID
         $rfid = RFID::where('rfid', $request->rfid_uid)->first();
 
         if (!$rfid) {
@@ -54,7 +48,6 @@ class RFIDController extends Controller
             ], 404);
         }
 
-        // Cari user berdasarkan RFID
         $user = $rfid->user;
 
         if (!$user) {
@@ -71,7 +64,6 @@ class RFIDController extends Controller
         ]);
     }
 
-    // Menambahkan Kehadiran (Attendance)
     public function addAttendance(Request $request)
     {
         $request->validate([
@@ -79,7 +71,6 @@ class RFIDController extends Controller
             'status' => 'required|in:hadir,absen,cuti'
         ]);
 
-        // Menambahkan data attendance
         $attendance = Attendance::create([
             'id_attendance' => uniqid(),
             'id_user' => $request->user_id,

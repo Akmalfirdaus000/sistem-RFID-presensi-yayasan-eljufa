@@ -31,6 +31,16 @@
             class="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 transition">Ajukan Izin Ketidakhadiran</button>
 
         <div class="overflow-x-auto mt-4">
+            @php
+    use Carbon\Carbon;
+
+    $company = \App\Models\Company::first();
+    $workTime = $company ? $company->work_time : '08:00-17:00';
+    [$jamMasukKerja, $jamPulangKerja] = explode('-', str_replace(' ', '', $workTime));
+    $jamMasukKerjaCarbon = Carbon::createFromFormat('H:i', $jamMasukKerja);
+    $jamPulangKerjaCarbon = Carbon::createFromFormat('H:i', $jamPulangKerja);
+@endphp
+
             <table class="w-full table-auto border-collapse border border-gray-300 shadow-sm">
                 <thead>
                     <tr class="bg-teal-700 text-white text-sm uppercase tracking-wide">
@@ -43,19 +53,61 @@
                     </tr>
                 </thead>
                 <tbody id="attendance-table">
-                    @foreach($attendances as $index => $attendance)
-                        <tr class="bg-white hover:bg-teal-100 text-gray-800 transition" data-id="{{ $attendance->id_attendance }}">
-                            <td class="px-4 py-2 border text-center">{{ $index + 1 }}</td>
-                            <td class="px-4 py-2 border text-center">{{ $attendance->tanggal }}</td>
-                            <td class="px-4 py-2 border text-center capitalize">{{ $attendance->status }}</td>
-                            <td class="px-4 py-2 border text-center">{{ $attendance->jam_masuk ?? '-' }}</td>
-                            <td class="px-4 py-2 border text-center">{{ $attendance->jam_keluar ?? '-' }}</td>
-                            <td class="px-4 py-2 border text-center">
-                                <button onclick="openDetailModal({{ json_encode($attendance) }})"
-                                    class="bg-sky-600 text-white px-3 py-1 rounded-md hover:bg-sky-700 transition">Detail</button>
-                            </td>
-                        </tr>
-                    @endforeach
+                   @foreach($attendances as $index => $attendance)
+    @php
+        $jamMasuk = $attendance->jam_masuk ? Carbon::parse($attendance->jam_masuk) : null;
+        $jamKeluar = $attendance->jam_keluar ? Carbon::parse($attendance->jam_keluar) : null;
+
+        $keteranganMasuk = '-';
+        if ($jamMasuk && $jamMasuk->gt($jamMasukKerjaCarbon)) {
+            $terlambat = $jamMasuk->diff($jamMasukKerjaCarbon);
+            $keteranganMasuk = 'Terlambat ' . $terlambat->h . ' jam ' . $terlambat->i . ' menit';
+        } elseif ($jamMasuk) {
+            $keteranganMasuk = 'Tepat Waktu';
+        }
+
+        $keteranganKeluar = '-';
+        if ($jamKeluar && $jamKeluar->lt($jamPulangKerjaCarbon)) {
+            $cepat = $jamPulangKerjaCarbon->diff($jamKeluar);
+            $keteranganKeluar = 'Pulang Cepat ' . $cepat->h . ' jam ' . $cepat->i . ' menit';
+        } elseif ($jamKeluar && $jamKeluar->gt($jamPulangKerjaCarbon)) {
+            $lembur = $jamKeluar->diff($jamPulangKerjaCarbon);
+            $keteranganKeluar = 'Lembur ' . $lembur->h . ' jam ' . $lembur->i . ' menit';
+        } elseif ($jamKeluar) {
+            $keteranganKeluar = 'Tepat Waktu';
+        }
+    @endphp
+
+    <tr class="bg-white hover:bg-teal-100 text-gray-800 transition" data-id="{{ $attendance->id_attendance }}">
+        <td class="px-4 py-2 border text-center">{{ $index + 1 }}</td>
+        <td class="px-4 py-2 border text-center">{{ $attendance->tanggal }}</td>
+        <td class="px-4 py-2 border text-center capitalize">{{ $attendance->status }}</td>
+
+        <td class="px-4 py-2 border text-center">
+            {{ $jamMasuk ? $jamMasuk->format('H:i') : '-' }}
+            @if($jamMasuk)
+                <br><small class="text-xs {{ $keteranganMasuk === 'Tepat Waktu' ? 'text-green-600' : 'text-red-600' }}">
+                    {{ $keteranganMasuk }}
+                </small>
+            @endif
+        </td>
+
+        <td class="px-4 py-2 border text-center">
+            {{ $jamKeluar ? $jamKeluar->format('H:i') : '-' }}
+            @if($jamKeluar)
+                <br><small class="text-xs {{ Str::startsWith($keteranganKeluar, 'Lembur') ? 'text-blue-600' : 'text-red-600' }}">
+                    {{ $keteranganKeluar }}
+                </small>
+            @endif
+        </td>
+
+        <td class="px-4 py-2 border text-center">
+            <button onclick="openDetailModal({{ json_encode($attendance) }})"
+                class="bg-sky-600 text-white px-3 py-1 rounded-md hover:bg-sky-700 transition">Detail</button>
+        </td>
+    </tr>
+@endforeach
+
                 </tbody>
             </table>
         </div>
@@ -99,39 +151,56 @@
 </div>
 
 
-    <!-- Modal Ajukan Izin -->
-    <div id="modalIzinCuti" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
-        <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md border-t-4 border-amber-500">
-            <h2 class="text-xl font-semibold mb-4">Ajukan Izin Ketidakhadiran</h2>
-            <form id="formIzinCuti" method="POST" action="{{ route('presensi.izin') }}" enctype="multipart/form-data">
-                @csrf
-                <label class="block text-sm font-medium text-gray-700">Tanggal</label>
-                <input type="date" name="tanggal" class="border p-2 w-full rounded mb-3" required>
+<!-- Modal Ajukan Izin -->
+<div id="modalIzinCuti" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md border-t-4 border-amber-500">
+        <h2 class="text-xl font-semibold mb-4">Ajukan Izin Ketidakhadiran</h2>
+        <form id="formIzinCuti" method="POST" action="{{ route('presensi.izin') }}" enctype="multipart/form-data">
+            @csrf
+            <label class="block text-sm font-medium text-gray-700">Tanggal</label>
+            <input type="date" name="tanggal" class="border p-2 w-full rounded mb-3" required>
 
-                <label class="block text-sm font-medium text-gray-700">Jenis Izin</label>
-                <select name="status" class="border p-2 w-full rounded mb-3" required>
-                    <option value="izin">izin</option>
-                    <option value="sakit">Sakit</option>
-                    <option value="lainnya">Lainnya</option>
-                </select>
+            <label class="block text-sm font-medium text-gray-700">Jenis Izin</label>
+            <select name="status" class="border p-2 w-full rounded mb-3" id="jenisIzinSelect" required onchange="ubahLabelLampiran()">
+                <option value="izin">Izin</option>
+                <option value="sakit">Sakit</option>
+                <option value="lainnya">Lainnya</option>
+            </select>
 
-                <label class="block text-sm font-medium text-gray-700">Keterangan</label>
-                <textarea name="keterangan" class="border p-2 w-full rounded mb-3" required></textarea>
+            <label class="block text-sm font-medium text-gray-700">Keterangan</label>
+            <textarea name="keterangan" class="border p-2 w-full rounded mb-3" required></textarea>
 
-                <label class="block text-sm font-medium text-gray-700">Lampiran (PDF/Dokumen)</label>
-                <input type="file" name="lampiran" class="border p-2 w-full rounded mb-3" accept=".pdf,.doc,.docx">
+            <label id="labelLampiran" class="block text-sm font-medium text-gray-700">Lampiran</label>
+            <input type="file" name="lampiran" class="border p-2 w-full rounded mb-3" accept=".pdf,.doc,.docx">
 
-                <label class="block text-sm font-medium text-gray-700">Foto Bukti</label>
-                <input type="file" name="foto" class="border p-2 w-full rounded mb-3" accept="image/*">
+            {{-- <label class="block text-sm font-medium text-gray-700">Foto Bukti</label>
+            <input type="file" name="foto" class="border p-2 w-full rounded mb-3" accept="image/*"> --}}
 
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeModal()"
-                        class="mr-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Batal</button>
-                    <button type="submit" class="bg-teal-700 text-white px-4 py-2 rounded hover:bg-teal-800">Kirim</button>
-                </div>
-            </form>
-        </div>
+            <div class="flex justify-end">
+                <button type="button" onclick="closeModal()"
+                    class="mr-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Batal</button>
+                <button type="submit" class="bg-teal-700 text-white px-4 py-2 rounded hover:bg-teal-800">Kirim</button>
+            </div>
+        </form>
     </div>
+</div>
+
+<!-- Script untuk ubah label -->
+<script>
+    function ubahLabelLampiran() {
+        const jenis = document.getElementById('jenisIzinSelect').value;
+        const label = document.getElementById('labelLampiran');
+
+        if (jenis === 'sakit') {
+            label.innerText = 'Lampiran Izin Sakit';
+        } else if (jenis === 'izin') {
+            label.innerText = 'Lampiran Izin Ketidakhadiran';
+        } else {
+            label.innerText = 'Lampiran';
+        }
+    }
+</script>
+
 
     <script>
         function openModal() {
